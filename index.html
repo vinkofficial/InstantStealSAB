@@ -3,298 +3,154 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InstaSteal/Duels SAB Script</title>
+<title>Mutation & Trait Submit</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-
-body{
-font-family:Segoe UI,sans-serif;
-background:#0a0f1c;
-color:white;
-overflow:hidden;
-transition:background .5s ease;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f0f1a;
+  color: white;
+  overflow-x: hidden;
 }
 
-/* PARTICLES */
-canvas{
-position:fixed;
-top:0;left:0;
-z-index:-1;
+.container {
+  max-width: 500px;
+  margin: 100px auto;
+  padding: 30px;
+  background: rgba(20,20,40,0.9);
+  border-radius: 15px;
+  box-shadow: 0 0 25px #00f7ff;
+  border: 2px solid #00f7ff;
+  text-align: center;
 }
 
-/* MAIN */
-.container{
-text-align:center;
-padding-top:120px;
-animation:fadeIn 1s ease;
+h1 {
+  margin-bottom: 20px;
 }
 
-h1{
-font-size:48px;
-text-shadow:0 0 25px #00f7ff;
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 16px;
 }
 
-.sub{opacity:.7;margin-bottom:40px}
-
-button{
-padding:12px 28px;
-border-radius:14px;
-border:2px solid #00f7ff;
-background:transparent;
-color:#00f7ff;
-cursor:pointer;
-margin:8px;
-font-weight:bold;
-transition:.3s;
+button {
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #00f7ff;
+  color: black;
+  font-weight: bold;
+  transition: 0.2s ease;
 }
 
-button:hover{
-background:#00f7ff;
-color:black;
-box-shadow:0 0 25px #00f7ff;
+button:hover {
+  background: white;
+  transform: scale(1.05);
 }
 
-/* MODALS */
-.modal{
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.6);
-backdrop-filter:blur(8px);
-justify-content:center;
-align-items:center;
-animation:fadeIn .4s ease;
+#notifications {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
 }
 
-.modal-content{
-background:#111827;
-padding:30px;
-border-radius:20px;
-width:90%;
-max-width:700px;
-border:2px solid #00f7ff;
-box-shadow:0 0 40px #00f7ff33;
-max-height:80vh;
-overflow:auto;
+.notification {
+  background: #111;
+  border-left: 4px solid #00f7ff;
+  padding: 12px 20px;
+  margin-top: 10px;
+  border-radius: 8px;
+  animation: fadeIn 0.3s ease;
 }
 
-input[type=text],input[type=color]{
-width:90%;
-padding:10px;
-border-radius:10px;
-border:none;
-margin:8px 0;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
-gap:8px;
-margin-top:10px;
-}
-
-.grid label{
-background:#1f2937;
-padding:6px;
-border-radius:8px;
-font-size:13px;
-}
-
-/* NOTIFICATIONS */
-#notif-container{
-position:fixed;
-bottom:20px;
-right:20px;
-display:flex;
-flex-direction:column;
-gap:10px;
-z-index:9999;
-}
-
-.toast{
-background:#111827;
-padding:15px 25px;
-border-radius:12px;
-border-left:4px solid #00f7ff;
-box-shadow:0 0 15px #00f7ff55;
-animation:slideIn .4s ease;
-}
-
-@keyframes slideIn{
-from{transform:translateX(100%);opacity:0}
-to{transform:translateX(0);opacity:1}
-}
-
-@keyframes fadeIn{
-from{opacity:0}
-to{opacity:1}
-}
-
-/* CURSOR TRAIL */
-.trail{
-position:fixed;
-width:6px;
-height:6px;
-border-radius:50%;
-background:#00f7ff;
-pointer-events:none;
-opacity:.7;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
 </head>
+
 <body>
 
-<canvas id="particles"></canvas>
-
 <div class="container">
-<h1>InstaSteal/Duels SAB Script</h1>
-<div class="sub">By Vink</div>
-<button onclick="clickSound();openForm()">Get Started</button>
-<button onclick="clickSound();adminMode()">Admin Panel</button>
+  <h1>Submit Your Mutation</h1>
+
+  <input id="mutation" placeholder="Enter your mutation">
+  <input id="trait" placeholder="Enter your trait">
+
+  <button onclick="sendData()">Send</button>
+
+  <hr style="margin:20px 0; opacity:0.3;">
+
+  <h3>Search</h3>
+  <input id="searchMutation" placeholder="Search mutation">
+  <input id="searchTrait" placeholder="Search trait">
+  <button onclick="searchData()">Search</button>
 </div>
 
-<div id="notif-container"></div>
-
-<!-- FORM MODAL -->
-<div class="modal" id="formModal">
-<div class="modal-content">
-<h2>Submit Request</h2>
-
-<input id="brainrot" type="text" placeholder="What Brainrot(s) Do you Want To Pay For?">
-
-<h3>Mutations</h3>
-<div id="mutations" class="grid"></div>
-
-<h3>Traits</h3>
-<div id="traits" class="grid"></div>
-
-<button onclick="clickSound();sendToDiscord()">Send</button>
-<button onclick="closeForm()">Close</button>
-</div>
-</div>
-
-<!-- MOD MENU -->
-<div class="modal" id="modMenu">
-<div class="modal-content">
-<h2>Vink Mod Menu</h2>
-<button onclick="enableRGB()">Enable RGB Background</button>
-<br><br>
-<label>Pick Custom Background</label>
-<input type="color" onchange="setColor(this.value)">
-<br><br>
-<button onclick="closeMod()">Close</button>
-</div>
-</div>
+<div id="notifications"></div>
 
 <script>
-const WEBHOOK_URL="https://discord.com/api/webhooks/1477788382447800380/g4IdQ7xazKfqIPfn-zmyhcRA624XIOvY7NVvzig-w6JjHZmWLbRIn6Fr1XrtlpOoS9yX";
+const workerURL = "https://webhook-sender.vinkgt-official.workers.dev/";
 
-const mutations=["Default","Gold","Diamond","Rainbow","Bloodrot","Candy","Lava","Galaxy","YinYang","Radioactive","Cursed","Divine"];
-const traits=["Taco","Galactic","Bloodmoon","Nyan","Firework","Tung","Crab","Bubblegum","Bombardiro","Glitch","Fire","Concert","Shark","Fin","10B","Brazil","Matteo","Hat","Sleepy","Spider","UFO","Strawberry","Extinct","Graffiti/Paint","Sombrero","Tie","Witch","Indonesia","Meowl","RIP","Pumpkin","SantaHat","Reindeer","Skibidi"];
+function showNotification(message) {
+  const notif = document.createElement("div");
+  notif.className = "notification";
+  notif.innerText = message;
+  document.getElementById("notifications").appendChild(notif);
 
-const click=new Audio("https://cdn.jsdelivr.net/gh/rohitashsingh123/click-sound@main/click.mp3");
-function clickSound(){click.currentTime=0;click.play();}
-
-function showToast(msg){
-const c=document.getElementById("notif-container");
-const t=document.createElement("div");
-t.className="toast";
-t.innerText=msg;
-c.appendChild(t);
-setTimeout(()=>t.remove(),4000);
+  setTimeout(() => {
+    notif.remove();
+  }, 4000);
 }
 
-window.onload=()=>{
-showToast("Welcome user! 👋");
-buildOptions();
+function sendData() {
+  const mutation = document.getElementById("mutation").value;
+  const trait = document.getElementById("trait").value;
+
+  if (!mutation || !trait) {
+    showNotification("Fill in both fields.");
+    return;
+  }
+
+  fetch(workerURL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      mutation: mutation,
+      trait: trait
+    })
+  })
+  .then(res => res.text())
+  .then(() => {
+    showNotification("Submission sent successfully.");
+    document.getElementById("mutation").value = "";
+    document.getElementById("trait").value = "";
+  })
+  .catch(() => {
+    showNotification("Error sending submission.");
+  });
+}
+
+function searchData() {
+  const m = document.getElementById("searchMutation").value;
+  const t = document.getElementById("searchTrait").value;
+
+  showNotification("Search feature is frontend only right now.");
+}
+
+window.onload = () => {
+  showNotification("Welcome user!");
 };
-
-function buildOptions(){
-const m=document.getElementById("mutations");
-const t=document.getElementById("traits");
-mutations.forEach(x=>{
-m.innerHTML+=`<label><input type="checkbox" value="${x}"> ${x}</label>`;
-});
-traits.forEach(x=>{
-t.innerHTML+=`<label><input type="checkbox" value="${x}"> ${x}</label>`;
-});
-}
-
-function openForm(){document.getElementById("formModal").style.display="flex";}
-function closeForm(){document.getElementById("formModal").style.display="none";}
-
-function sendToDiscord(){
-const brainrot=document.getElementById("brainrot").value||"None";
-const selectedMut=[...document.querySelectorAll("#mutations input:checked")].map(i=>i.value);
-const selectedTrait=[...document.querySelectorAll("#traits input:checked")].map(i=>i.value);
-
-fetch(WEBHOOK_URL,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-content:`**New SAB Script Request**\nBrainrot: ${brainrot}\nMutations: ${selectedMut.join(", ")||"None"}\nTraits: ${selectedTrait.join(", ")||"None"}`
-})
-}).then(r=>{
-if(r.ok) showToast("Sent Successfully 🚀");
-else showToast("Failed to send ❌");
-});
-
-closeForm();
-}
-
-function adminMode(){
-const code=prompt("Enter Admin Code:");
-if(code==="vink123"){
-document.getElementById("modMenu").style.display="flex";
-showToast("Welcome Vink 👑");
-}else showToast("Wrong Code");
-}
-
-function closeMod(){document.getElementById("modMenu").style.display="none";}
-
-function enableRGB(){
-let i=0;
-setInterval(()=>{
-document.body.style.background=`hsl(${i},70%,15%)`;
-i=(i+2)%360;
-},50);
-}
-
-function setColor(c){document.body.style.background=c;}
-
-/* PARTICLES (LIGHTWEIGHT) */
-const canvas=document.getElementById("particles");
-const ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-
-let particles=[];
-for(let i=0;i<40;i++){
-particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*0.5,vy:(Math.random()-0.5)*0.5});
-}
-
-function animate(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-ctx.fillStyle="#00f7ff";
-particles.forEach(p=>{
-p.x+=p.vx;
-p.y+=p.vy;
-ctx.fillRect(p.x,p.y,2,2);
-});
-requestAnimationFrame(animate);
-}
-animate();
-
-/* CURSOR TRAIL */
-document.addEventListener("mousemove",e=>{
-const dot=document.createElement("div");
-dot.className="trail";
-dot.style.left=e.clientX+"px";
-dot.style.top=e.clientY+"px";
-document.body.appendChild(dot);
-setTimeout(()=>dot.remove(),250);
-});
 </script>
 
 </body>
