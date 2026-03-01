@@ -6,178 +6,171 @@
 <title>InstaSteal/Duels SAB Script</title>
 
 <style>
-* { box-sizing: border-box; }
+*{margin:0;padding:0;box-sizing:border-box}
 
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    color: white;
-    overflow-x: hidden;
-    transition: background 0.5s ease;
+body{
+font-family:Segoe UI,sans-serif;
+background:#0a0f1c;
+color:white;
+overflow:hidden;
+transition:background .5s ease;
 }
 
-/* Animated gradient background */
-body.default-bg {
-    background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #1f1c2c);
-    background-size: 400% 400%;
-    animation: gradientMove 15s ease infinite;
+/* PARTICLES */
+canvas{
+position:fixed;
+top:0;left:0;
+z-index:-1;
 }
 
-@keyframes gradientMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+/* MAIN */
+.container{
+text-align:center;
+padding-top:120px;
+animation:fadeIn 1s ease;
 }
 
-/* Center content */
-.container {
-    text-align: center;
-    padding: 100px 20px;
+h1{
+font-size:48px;
+text-shadow:0 0 25px #00f7ff;
 }
 
-h1 {
-    font-size: 48px;
-    margin: 0;
+.sub{opacity:.7;margin-bottom:40px}
+
+button{
+padding:12px 28px;
+border-radius:14px;
+border:2px solid #00f7ff;
+background:transparent;
+color:#00f7ff;
+cursor:pointer;
+margin:8px;
+font-weight:bold;
+transition:.3s;
 }
 
-.sub {
-    opacity: 0.7;
-    margin-bottom: 40px;
+button:hover{
+background:#00f7ff;
+color:black;
+box-shadow:0 0 25px #00f7ff;
 }
 
-button {
-    padding: 12px 28px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    margin: 5px;
-    font-weight: bold;
-    transition: 0.3s ease;
+/* MODALS */
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.6);
+backdrop-filter:blur(8px);
+justify-content:center;
+align-items:center;
+animation:fadeIn .4s ease;
 }
 
-.primary {
-    background: #00ffae;
-    color: black;
+.modal-content{
+background:#111827;
+padding:30px;
+border-radius:20px;
+width:90%;
+max-width:700px;
+border:2px solid #00f7ff;
+box-shadow:0 0 40px #00f7ff33;
+max-height:80vh;
+overflow:auto;
 }
 
-.primary:hover {
-    transform: scale(1.07);
-    box-shadow: 0 0 20px #00ffae;
+input[type=text],input[type=color]{
+width:90%;
+padding:10px;
+border-radius:10px;
+border:none;
+margin:8px 0;
 }
 
-.secondary {
-    background: rgba(255,255,255,0.1);
-    color: white;
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+gap:8px;
+margin-top:10px;
 }
 
-.secondary:hover {
-    background: rgba(255,255,255,0.2);
+.grid label{
+background:#1f2937;
+padding:6px;
+border-radius:8px;
+font-size:13px;
 }
 
-/* Glass Modal */
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    backdrop-filter: blur(10px);
-    background: rgba(0,0,0,0.5);
-    justify-content: center;
-    align-items: center;
+/* NOTIFICATIONS */
+#notif-container{
+position:fixed;
+bottom:20px;
+right:20px;
+display:flex;
+flex-direction:column;
+gap:10px;
+z-index:9999;
 }
 
-.modal-content {
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(20px);
-    padding: 30px;
-    border-radius: 20px;
-    width: 90%;
-    max-width: 700px;
-    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+.toast{
+background:#111827;
+padding:15px 25px;
+border-radius:12px;
+border-left:4px solid #00f7ff;
+box-shadow:0 0 15px #00f7ff55;
+animation:slideIn .4s ease;
 }
 
-input[type="text"], input[type="color"] {
-    width: 80%;
-    padding: 8px;
-    border-radius: 10px;
-    border: none;
-    margin-top: 10px;
+@keyframes slideIn{
+from{transform:translateX(100%);opacity:0}
+to{transform:translateX(0);opacity:1}
 }
 
-.search {
-    width: 80%;
-    padding: 8px;
-    border-radius: 10px;
-    border: none;
-    margin-top: 10px;
+@keyframes fadeIn{
+from{opacity:0}
+to{opacity:1}
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(120px,1fr));
-    gap: 8px;
-    margin-top: 10px;
-}
-
-.grid label {
-    background: rgba(255,255,255,0.1);
-    padding: 6px;
-    border-radius: 8px;
-    font-size: 13px;
-}
-
-/* Notifications */
-.toast {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: rgba(0,0,0,0.8);
-    padding: 15px 25px;
-    border-radius: 15px;
-    box-shadow: 0 0 15px #00ffae;
-    animation: slideIn 0.5s ease;
-}
-
-@keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-
-/* RGB animation */
-@keyframes rgbMove {
-    0% { background-color: red; }
-    33% { background-color: green; }
-    66% { background-color: blue; }
-    100% { background-color: red; }
+/* CURSOR TRAIL */
+.trail{
+position:fixed;
+width:6px;
+height:6px;
+border-radius:50%;
+background:#00f7ff;
+pointer-events:none;
+opacity:.7;
 }
 </style>
 </head>
-<body class="default-bg">
+<body>
+
+<canvas id="particles"></canvas>
 
 <div class="container">
-    <h1>InstaSteal/Duels SAB Script</h1>
-    <div class="sub">By Vink</div>
-    <button class="primary" onclick="openMain()">Get Started!</button>
-    <button class="secondary" onclick="adminMode()">Admin Panel</button>
+<h1>InstaSteal/Duels SAB Script</h1>
+<div class="sub">By Vink</div>
+<button onclick="clickSound();openForm()">Get Started</button>
+<button onclick="clickSound();adminMode()">Admin Panel</button>
 </div>
 
-<!-- MAIN MODAL -->
-<div class="modal" id="mainModal">
+<div id="notif-container"></div>
+
+<!-- FORM MODAL -->
+<div class="modal" id="formModal">
 <div class="modal-content">
-<h2>What Brainrot(s) Do you Want To Pay for the script?</h2>
-<input id="brainrotInput" type="text" placeholder="Type brainrot here...">
-<br><br>
+<h2>Submit Request</h2>
 
-<h3>Search Mutation</h3>
-<input id="mutSearch" class="search" type="text" placeholder="Search mutation..." onkeyup="filterList('mut')">
-<div id="mutGrid" class="grid"></div>
+<input id="brainrot" type="text" placeholder="What Brainrot(s) Do you Want To Pay For?">
 
-<h3>Search Trait</h3>
-<input id="traitSearch" class="search" type="text" placeholder="Search trait..." onkeyup="filterList('trait')">
-<div id="traitGrid" class="grid"></div>
+<h3>Mutations</h3>
+<div id="mutations" class="grid"></div>
 
-<br>
-<button class="primary" onclick="sendDiscord()">Send</button>
-<button class="secondary" onclick="closeAll()">Close</button>
+<h3>Traits</h3>
+<div id="traits" class="grid"></div>
+
+<button onclick="clickSound();sendToDiscord()">Send</button>
+<button onclick="closeForm()">Close</button>
 </div>
 </div>
 
@@ -185,95 +178,123 @@ input[type="text"], input[type="color"] {
 <div class="modal" id="modMenu">
 <div class="modal-content">
 <h2>Vink Mod Menu</h2>
-
-<button class="primary" onclick="enableRGB()">Enable RGB Background</button>
+<button onclick="enableRGB()">Enable RGB Background</button>
 <br><br>
-<label>Pick Custom Background Color:</label><br>
+<label>Pick Custom Background</label>
 <input type="color" onchange="setColor(this.value)">
 <br><br>
-<button class="secondary" onclick="closeMod()">Close</button>
-
+<button onclick="closeMod()">Close</button>
 </div>
 </div>
 
 <script>
-const WEBHOOK_URL = "PASTE YOUR WEBHOOK HERE";
+const WEBHOOK_URL="https://discord.com/api/webhooks/1477788382447800380/g4IdQ7xazKfqIPfn-zmyhcRA624XIOvY7NVvzig-w6JjHZmWLbRIn6Fr1XrtlpOoS9yX";
 
-const mutations = ["Default","Gold","Diamond","Rainbow","Bloodrot","Candy","Lava","Galaxy","YinYang","Radioactive","Cursed","Divine"];
-const traits = ["Taco","Galactic","Bloodmoon","Nyan","Firework","Tung","Crab","Bubblegum","Bombardiro","Glitch","Fire","Concert","Shark","Fin","10B","Brazil","Matteo","Hat","Sleepy","Spider","UFO","Strawberry","Extinct","Graffiti/Paint","Sombrero","Tie","Witch","Hat","Indonesia","Meowl","RIP","Pumpkin","SantaHat","Reindeer","Skibidi"];
+const mutations=["Default","Gold","Diamond","Rainbow","Bloodrot","Candy","Lava","Galaxy","YinYang","Radioactive","Cursed","Divine"];
+const traits=["Taco","Galactic","Bloodmoon","Nyan","Firework","Tung","Crab","Bubblegum","Bombardiro","Glitch","Fire","Concert","Shark","Fin","10B","Brazil","Matteo","Hat","Sleepy","Spider","UFO","Strawberry","Extinct","Graffiti/Paint","Sombrero","Tie","Witch","Indonesia","Meowl","RIP","Pumpkin","SantaHat","Reindeer","Skibidi"];
 
-window.onload = function(){
-    showToast("Welcome user!");
+const click=new Audio("https://cdn.jsdelivr.net/gh/rohitashsingh123/click-sound@main/click.mp3");
+function clickSound(){click.currentTime=0;click.play();}
+
+function showToast(msg){
+const c=document.getElementById("notif-container");
+const t=document.createElement("div");
+t.className="toast";
+t.innerText=msg;
+c.appendChild(t);
+setTimeout(()=>t.remove(),4000);
+}
+
+window.onload=()=>{
+showToast("Welcome user! 👋");
+buildOptions();
 };
 
-function showToast(message){
-    const toast = document.createElement("div");
-    toast.className="toast";
-    toast.innerText=message;
-    document.body.appendChild(toast);
-    setTimeout(()=>toast.remove(),3000);
+function buildOptions(){
+const m=document.getElementById("mutations");
+const t=document.getElementById("traits");
+mutations.forEach(x=>{
+m.innerHTML+=`<label><input type="checkbox" value="${x}"> ${x}</label>`;
+});
+traits.forEach(x=>{
+t.innerHTML+=`<label><input type="checkbox" value="${x}"> ${x}</label>`;
+});
 }
 
-function openMain(){
-    document.getElementById("mainModal").style.display="flex";
-    buildList('mut');
-    buildList('trait');
-}
+function openForm(){document.getElementById("formModal").style.display="flex";}
+function closeForm(){document.getElementById("formModal").style.display="none";}
 
-function closeAll(){
-    document.getElementById("mainModal").style.display="none";
-}
+function sendToDiscord(){
+const brainrot=document.getElementById("brainrot").value||"None";
+const selectedMut=[...document.querySelectorAll("#mutations input:checked")].map(i=>i.value);
+const selectedTrait=[...document.querySelectorAll("#traits input:checked")].map(i=>i.value);
 
-function buildList(type){
-    const list = type==="mut"?mutations:traits;
-    const container = document.getElementById(type==="mut"?"mutGrid":"traitGrid");
-    container.innerHTML="";
-    list.forEach(item=>{
-        const label=document.createElement("label");
-        label.innerHTML=`<input type="checkbox" value="${item}"> ${item}`;
-        container.appendChild(label);
-    });
-}
+fetch(WEBHOOK_URL,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+content:`**New SAB Script Request**\nBrainrot: ${brainrot}\nMutations: ${selectedMut.join(", ")||"None"}\nTraits: ${selectedTrait.join(", ")||"None"}`
+})
+}).then(r=>{
+if(r.ok) showToast("Sent Successfully 🚀");
+else showToast("Failed to send ❌");
+});
 
-function filterList(type){
-    const search=document.getElementById(type==="mut"?"mutSearch":"traitSearch").value.toLowerCase();
-    const list=type==="mut"?mutations:traits;
-    const container=document.getElementById(type==="mut"?"mutGrid":"traitGrid");
-    container.innerHTML="";
-    list.filter(x=>x.toLowerCase().includes(search)).forEach(item=>{
-        const label=document.createElement("label");
-        label.innerHTML=`<input type="checkbox" value="${item}"> ${item}`;
-        container.appendChild(label);
-    });
-}
-
-function sendDiscord(){
-    showToast("Request Sent!");
+closeForm();
 }
 
 function adminMode(){
-    const code=prompt("Enter Admin Code:");
-    if(code==="vink123"){
-        document.getElementById("modMenu").style.display="flex";
-        showToast("Welcome Vink 👑");
-    } else {
-        showToast("Wrong Code!");
-    }
+const code=prompt("Enter Admin Code:");
+if(code==="vink123"){
+document.getElementById("modMenu").style.display="flex";
+showToast("Welcome Vink 👑");
+}else showToast("Wrong Code");
 }
 
-function closeMod(){
-    document.getElementById("modMenu").style.display="none";
-}
+function closeMod(){document.getElementById("modMenu").style.display="none";}
 
 function enableRGB(){
-    document.body.classList.remove("default-bg");
-    document.body.style.animation="rgbMove 5s linear infinite";
+let i=0;
+setInterval(()=>{
+document.body.style.background=`hsl(${i},70%,15%)`;
+i=(i+2)%360;
+},50);
 }
 
-function setColor(color){
-    document.body.style.animation="none";
-    document.body.style.background=color;
+function setColor(c){document.body.style.background=c;}
+
+/* PARTICLES (LIGHTWEIGHT) */
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+for(let i=0;i<40;i++){
+particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*0.5,vy:(Math.random()-0.5)*0.5});
 }
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="#00f7ff";
+particles.forEach(p=>{
+p.x+=p.vx;
+p.y+=p.vy;
+ctx.fillRect(p.x,p.y,2,2);
+});
+requestAnimationFrame(animate);
+}
+animate();
+
+/* CURSOR TRAIL */
+document.addEventListener("mousemove",e=>{
+const dot=document.createElement("div");
+dot.className="trail";
+dot.style.left=e.clientX+"px";
+dot.style.top=e.clientY+"px";
+document.body.appendChild(dot);
+setTimeout(()=>dot.remove(),250);
+});
 </script>
 
 </body>
