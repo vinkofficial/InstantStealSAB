@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InstaSteal/Duels SAB Script</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #0d1117;
+    color: #e6edf3;
+    text-align: center;
+}
+
+.container {
+    padding: 60px 20px;
+}
+
+h1 {
+    font-size: 40px;
+    margin-bottom: 5px;
+}
+
+.sub {
+    font-size: 14px;
+    color: #8b949e;
+    margin-bottom: 40px;
+}
+
+button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.2s ease;
+}
+
+.primary {
+    background: #238636;
+    color: white;
+}
+
+.primary:hover {
+    background: #2ea043;
+    transform: scale(1.05);
+}
+
+.secondary {
+    background: #30363d;
+    color: white;
+}
+
+.secondary:hover {
+    background: #484f58;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #161b22;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    text-align: left;
+}
+
+input[type="text"] {
+    width: 80%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #30363d;
+    background: #0d1117;
+    color: white;
+}
+
+.info-btn {
+    padding: 8px 12px;
+    margin-left: 5px;
+    font-size: 12px;
+}
+
+.select-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.select-grid label {
+    background: #30363d;
+    padding: 6px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.close-btn {
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>InstaSteal/Duels SAB Script</h1>
+    <div class="sub">By Vink</div>
+    <button class="primary" onclick="openMain()">Get Started!</button>
+</div>
+
+<!-- MAIN MODAL -->
+<div class="modal" id="mainModal">
+    <div class="modal-content">
+        <h2>What Brainrot(s) Do you Want To Pay for the script?</h2>
+        
+        <input type="text" placeholder="Type brainrot here...">
+        <button class="secondary info-btn" onclick="showInfo()">Info</button>
+
+        <br><br>
+        <button class="primary" onclick="openMutation()">Continue</button>
+        <button class="secondary close-btn" onclick="closeAll()">Close</button>
+    </div>
+</div>
+
+<!-- MUTATION MODAL -->
+<div class="modal" id="mutationModal">
+    <div class="modal-content">
+        <h2>What Mutation Does it have?</h2>
+        <div class="select-grid">
+            <label><input type="checkbox"> Default</label>
+            <label><input type="checkbox"> Gold</label>
+            <label><input type="checkbox"> Diamond</label>
+            <label><input type="checkbox"> Rainbow</label>
+            <label><input type="checkbox"> Bloodrot</label>
+            <label><input type="checkbox"> Candy</label>
+            <label><input type="checkbox"> Lava</label>
+            <label><input type="checkbox"> Galaxy</label>
+            <label><input type="checkbox"> YinYang</label>
+            <label><input type="checkbox"> Radioactive</label>
+            <label><input type="checkbox"> Cursed</label>
+            <label><input type="checkbox"> Divine</label>
+        </div>
+
+        <h2 style="margin-top:25px;">What Traits Does it have?</h2>
+        <div class="select-grid">
+            <label><input type="checkbox"> Taco</label>
+            <label><input type="checkbox"> Galactic</label>
+            <label><input type="checkbox"> Bloodmoon</label>
+            <label><input type="checkbox"> Nyan</label>
+            <label><input type="checkbox"> Firework</label>
+            <label><input type="checkbox"> Tung</label>
+            <label><input type="checkbox"> Crab</label>
+            <label><input type="checkbox"> Bubblegum</label>
+            <label><input type="checkbox"> Bombardiro</label>
+            <label><input type="checkbox"> Glitch</label>
+            <label><input type="checkbox"> Fire</label>
+            <label><input type="checkbox"> Concert</label>
+            <label><input type="checkbox"> Shark</label>
+            <label><input type="checkbox"> Fin</label>
+            <label><input type="checkbox"> 10B</label>
+            <label><input type="checkbox"> Brazil</label>
+            <label><input type="checkbox"> Matteo</label>
+            <label><input type="checkbox"> Hat</label>
+            <label><input type="checkbox"> Sleepy</label>
+            <label><input type="checkbox"> Spider</label>
+            <label><input type="checkbox"> UFO</label>
+            <label><input type="checkbox"> Strawberry</label>
+            <label><input type="checkbox"> Extinct</label>
+            <label><input type="checkbox"> Graffiti/Paint</label>
+            <label><input type="checkbox"> Sombrero</label>
+            <label><input type="checkbox"> Tie</label>
+            <label><input type="checkbox"> Witch</label>
+            <label><input type="checkbox"> Hat</label>
+            <label><input type="checkbox"> Indonesia</label>
+            <label><input type="checkbox"> Meowl</label>
+            <label><input type="checkbox"> RIP</label>
+            <label><input type="checkbox"> Pumpkin</label>
+            <label><input type="checkbox"> SantaHat</label>
+            <label><input type="checkbox"> Reindeer</label>
+            <label><input type="checkbox"> Skibidi</label>
+        </div>
+
+        <button class="secondary close-btn" onclick="closeAll()">Close</button>
+    </div>
+</div>
+
+<script>
+function openMain() {
+    document.getElementById("mainModal").style.display = "flex";
+}
+
+function openMutation() {
+    document.getElementById("mainModal").style.display = "none";
+    document.getElementById("mutationModal").style.display = "flex";
+}
+
+function closeAll() {
+    document.getElementById("mainModal").style.display = "none";
+    document.getElementById("mutationModal").style.display = "none";
+}
+
+function showInfo() {
+    alert("The better Brainrot the Higher chance Vink Will Accept!");
+}
+</script>
+
+</body>
+</html>
