@@ -9,14 +9,14 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 
 body {
-    font-family: 'Segoe UI', sans-serif;
-    background: #0a0f1c;
-    color: white;
+    font-family:'Segoe UI',sans-serif;
+    background:#0a0f1c;
+    color:white;
     overflow:hidden;
 }
 
 canvas {
-    position: fixed;
+    position:fixed;
     top:0;
     left:0;
     z-index:-1;
@@ -25,7 +25,6 @@ canvas {
 .container {
     text-align:center;
     padding-top:120px;
-    animation: fadeIn 1s ease;
 }
 
 h1 {
@@ -36,6 +35,7 @@ h1 {
 .sub {
     opacity:0.7;
     margin-bottom:40px;
+    font-size:14px;
 }
 
 button {
@@ -64,7 +64,6 @@ button:hover {
     backdrop-filter:blur(10px);
     justify-content:center;
     align-items:center;
-    animation: fadeIn 0.4s ease;
 }
 
 .modal-content {
@@ -72,56 +71,27 @@ button:hover {
     padding:30px;
     border-radius:20px;
     width:90%;
-    max-width:700px;
+    max-width:600px;
     border:2px solid #00f7ff;
-    box-shadow:0 0 40px #00f7ff33;
+    text-align:center;
 }
 
-input[type="text"], input[type="color"] {
+input {
     width:80%;
-    padding:8px;
+    padding:10px;
     border-radius:8px;
     border:none;
     margin-top:10px;
 }
 
-#notif-container {
+.toast {
     position:fixed;
     bottom:20px;
     right:20px;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-}
-
-.toast {
     background:#111827;
     padding:15px 25px;
-    border-radius:12px;
     border-left:4px solid #00f7ff;
-    box-shadow:0 0 15px #00f7ff55;
-    animation: slideIn 0.4s ease;
-}
-
-@keyframes slideIn {
-    from { transform:translateX(100%); opacity:0; }
-    to { transform:translateX(0); opacity:1; }
-}
-
-@keyframes fadeIn {
-    from { opacity:0; }
-    to { opacity:1; }
-}
-
-.trail {
-    position:fixed;
-    width:6px;
-    height:6px;
-    border-radius:50%;
-    background:#00f7ff;
-    pointer-events:none;
-    opacity:0.7;
-    transition: transform 0.1s linear;
+    border-radius:12px;
 }
 </style>
 </head>
@@ -132,103 +102,115 @@ input[type="text"], input[type="color"] {
 <div class="container">
     <h1>InstaSteal/Duels SAB Script</h1>
     <div class="sub">By Vink</div>
-    <button onclick="playClick();sendDiscord()">Get Started</button>
-    <button onclick="playClick();adminMode()">Admin Panel</button>
+    <button onclick="openMain()">Get Started!</button>
 </div>
 
-<div id="notif-container"></div>
+<div id="mainModal" class="modal">
+  <div class="modal-content">
+    <h2>What Brainrot(s) Do you Want To Pay for the script?</h2>
+    <input id="brainrotInput" placeholder="Type here...">
+    <br>
+    <button onclick="showInfo()">ℹ Info</button>
+    <button onclick="openMutation()">Next</button>
+  </div>
+</div>
+
+<div id="mutationModal" class="modal">
+  <div class="modal-content">
+    <h2>What Mutation Does it have?</h2>
+    <select id="mutationSelect">
+      <option>Default</option><option>Gold</option><option>Diamond</option>
+      <option>Rainbow</option><option>Bloodrot</option><option>Candy</option>
+      <option>Lava</option><option>Galaxy</option><option>YinYang</option>
+      <option>Radioactive</option><option>Cursed</option><option>Divine</option>
+    </select>
+    <br><br>
+    <button onclick="openTraits()">Next</button>
+  </div>
+</div>
+
+<div id="traitModal" class="modal">
+  <div class="modal-content">
+    <h2>What Traits Does it have?</h2>
+    <select id="traitSelect">
+      <option>Taco</option><option>Galactic</option><option>Bloodmoon</option>
+      <option>Nyan</option><option>Firework</option><option>Tung</option>
+      <option>Crab</option><option>Bubblegum</option><option>Bombardiro</option>
+      <option>Glitch</option><option>Fire</option><option>Concert</option>
+      <option>Shark</option><option>Fin</option><option>10B</option>
+      <option>Brazil</option><option>Matteo</option><option>Hat</option>
+      <option>Sleepy</option><option>Spider</option><option>UFO</option>
+      <option>Strawberry</option><option>Extinct</option><option>Graffiti/Paint</option>
+      <option>Sombrero</option><option>Tie</option><option>Witch</option>
+      <option>Indonesia</option><option>Meowl</option><option>RIP</option>
+      <option>Pumpkin</option><option>SantaHat</option><option>Reindeer</option>
+      <option>Skibidi</option>
+    </select>
+    <br><br>
+    <button onclick="submitAll()">Submit</button>
+  </div>
+</div>
 
 <script>
+const WORKER_URL="https://webhook-sender.vinkgt-official.workers.dev/";
 
-/* 🔥 YOUR CLOUDLFARE WORKER URL */
-const WEBHOOK_URL = "https://webhook-sender.vinkgt-official.workers.dev/";
-
-/* CLICK SOUND */
-const clickSound = new Audio("https://cdn.jsdelivr.net/gh/rohitashsingh123/click-sound@main/click.mp3");
-function playClick(){ clickSound.currentTime=0; clickSound.play(); }
-
-/* NOTIFICATIONS */
-function showToast(msg){
-    const container=document.getElementById("notif-container");
-    const toast=document.createElement("div");
-    toast.className="toast";
-    toast.innerText=msg;
-    container.appendChild(toast);
-    setTimeout(()=>toast.remove(),4000);
+function openMain(){
+  document.getElementById("mainModal").style.display="flex";
 }
 
-window.onload=()=> showToast("Welcome user! 👋");
+function showInfo(){
+  alert("The better Brainrot the Higher chance Vink Will Accept!");
+}
 
-/* ✅ SEND TO CLOUDFLARE WORKER */
-function sendDiscord(){
-    fetch(WEBHOOK_URL,{
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body:JSON.stringify({
-            mutation: "SAB Script Request",
-            trait: "User clicked Get Started"
-        })
+function openMutation(){
+  document.getElementById("mainModal").style.display="none";
+  document.getElementById("mutationModal").style.display="flex";
+}
+
+function openTraits(){
+  document.getElementById("mutationModal").style.display="none";
+  document.getElementById("traitModal").style.display="flex";
+}
+
+function submitAll(){
+  const brainrot=document.getElementById("brainrotInput").value;
+  const mutation=document.getElementById("mutationSelect").value;
+  const trait=document.getElementById("traitSelect").value;
+
+  fetch(WORKER_URL,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      mutation:mutation,
+      trait:trait,
+      brainrot:brainrot
     })
-    .then(res=>{
-        if(res.ok){
-            showToast("Sent Successfully! 🚀");
-        } else {
-            showToast("Worker responded but failed.");
-        }
-    })
-    .catch(err=>{
-        showToast("Error sending. Check worker.");
-        console.error(err);
-    });
+  }).then(()=>{
+    alert("Sent Successfully!");
+    location.reload();
+  });
 }
 
-/* ADMIN MODE */
-function adminMode(){
-    const code=prompt("Enter Admin Code:");
-    if(code==="vink123"){
-        showToast("Welcome Vink 👑");
-        document.body.style.background="black";
-    } else showToast("Wrong Code");
-}
-
-/* PARTICLES */
+/* particles */
 const canvas=document.getElementById("particles");
 const ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
-
 let particles=[];
-for(let i=0;i<50;i++){
-    particles.push({
-        x:Math.random()*canvas.width,
-        y:Math.random()*canvas.height,
-        vx:(Math.random()-0.5)*0.5,
-        vy:(Math.random()-0.5)*0.5
-    });
+for(let i=0;i<40;i++){
+ particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*0.5,vy:(Math.random()-0.5)*0.5});
 }
-
 function animate(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle="#00f7ff";
-    particles.forEach(p=>{
-        p.x+=p.vx;
-        p.y+=p.vy;
-        ctx.fillRect(p.x,p.y,2,2);
-    });
-    requestAnimationFrame(animate);
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ ctx.fillStyle="#00f7ff";
+ particles.forEach(p=>{
+  p.x+=p.vx;
+  p.y+=p.vy;
+  ctx.fillRect(p.x,p.y,2,2);
+ });
+ requestAnimationFrame(animate);
 }
 animate();
-
-/* CURSOR TRAIL */
-document.addEventListener("mousemove",e=>{
-    const dot=document.createElement("div");
-    dot.className="trail";
-    dot.style.left=e.clientX+"px";
-    dot.style.top=e.clientY+"px";
-    document.body.appendChild(dot);
-    setTimeout(()=>dot.remove(),300);
-});
-
 </script>
 
 </body>
