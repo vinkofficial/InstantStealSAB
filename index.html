@@ -3,169 +3,232 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mutation & Trait Submit</title>
+<title>InstaSteal/Duels SAB Script</title>
 
 <style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f0f1a;
-  color: white;
+    font-family: 'Segoe UI', sans-serif;
+    background: #0a0f1c;
+    color: white;
+    overflow:hidden;
+}
+
+canvas {
+    position: fixed;
+    top:0;
+    left:0;
+    z-index:-1;
 }
 
 .container {
-  max-width: 500px;
-  margin: 100px auto;
-  padding: 30px;
-  background: rgba(20,20,40,0.9);
-  border-radius: 15px;
-  box-shadow: 0 0 25px #00f7ff;
-  border: 2px solid #00f7ff;
-  text-align: center;
+    text-align:center;
+    padding-top:120px;
+    animation: fadeIn 1s ease;
 }
 
-select, input {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 8px;
-  border: none;
-  outline: none;
-  font-size: 16px;
+h1 {
+    font-size:48px;
+    text-shadow:0 0 20px #00f7ff;
+}
+
+.sub {
+    opacity:0.7;
+    margin-bottom:40px;
 }
 
 button {
-  padding: 12px 20px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  background: #00f7ff;
-  color: black;
-  font-weight: bold;
-  transition: 0.2s ease;
+    padding:12px 28px;
+    border-radius:12px;
+    border:2px solid #00f7ff;
+    background:transparent;
+    color:#00f7ff;
+    cursor:pointer;
+    margin:8px;
+    font-weight:bold;
+    transition:0.3s;
 }
 
 button:hover {
-  background: white;
-  transform: scale(1.05);
+    background:#00f7ff;
+    color:black;
+    box-shadow:0 0 25px #00f7ff;
 }
 
-#notifications {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
+.modal {
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter:blur(10px);
+    justify-content:center;
+    align-items:center;
+    animation: fadeIn 0.4s ease;
 }
 
-.notification {
-  background: #111;
-  border-left: 4px solid #00f7ff;
-  padding: 12px 20px;
-  margin-top: 10px;
-  border-radius: 8px;
-  animation: fadeIn 0.3s ease;
+.modal-content {
+    background:#111827;
+    padding:30px;
+    border-radius:20px;
+    width:90%;
+    max-width:700px;
+    border:2px solid #00f7ff;
+    box-shadow:0 0 40px #00f7ff33;
+}
+
+input[type="text"], input[type="color"] {
+    width:80%;
+    padding:8px;
+    border-radius:8px;
+    border:none;
+    margin-top:10px;
+}
+
+#notif-container {
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.toast {
+    background:#111827;
+    padding:15px 25px;
+    border-radius:12px;
+    border-left:4px solid #00f7ff;
+    box-shadow:0 0 15px #00f7ff55;
+    animation: slideIn 0.4s ease;
+}
+
+@keyframes slideIn {
+    from { transform:translateX(100%); opacity:0; }
+    to { transform:translateX(0); opacity:1; }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+    from { opacity:0; }
+    to { opacity:1; }
+}
+
+.trail {
+    position:fixed;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#00f7ff;
+    pointer-events:none;
+    opacity:0.7;
+    transition: transform 0.1s linear;
 }
 </style>
 </head>
-
 <body>
 
+<canvas id="particles"></canvas>
+
 <div class="container">
-  <h1>Submit Your Mutation</h1>
-
-  <!-- Mutation Dropdown -->
-  <select id="mutationSelect" onchange="toggleMutationInput()">
-    <option value="">Select Mutation</option>
-    <option>Overcharged</option>
-    <option>Shadowborn</option>
-    <option>Crystal Skin</option>
-    <option value="custom">Custom Mutation</option>
-  </select>
-
-  <input id="customMutation" placeholder="Type custom mutation" style="display:none;">
-
-  <!-- Trait Dropdown -->
-  <select id="traitSelect" onchange="toggleTraitInput()">
-    <option value="">Select Trait</option>
-    <option>Speed Boost</option>
-    <option>Double Jump</option>
-    <option>Night Vision</option>
-    <option value="custom">Custom Trait</option>
-  </select>
-
-  <input id="customTrait" placeholder="Type custom trait" style="display:none;">
-
-  <button onclick="sendData()">Send</button>
+    <h1>InstaSteal/Duels SAB Script</h1>
+    <div class="sub">By Vink</div>
+    <button onclick="playClick();sendDiscord()">Get Started</button>
+    <button onclick="playClick();adminMode()">Admin Panel</button>
 </div>
 
-<div id="notifications"></div>
+<div id="notif-container"></div>
 
 <script>
-const workerURL = "https://webhook-sender.vinkgt-official.workers.dev/";
 
-function showNotification(message) {
-  const notif = document.createElement("div");
-  notif.className = "notification";
-  notif.innerText = message;
-  document.getElementById("notifications").appendChild(notif);
+/* 🔥 YOUR CLOUDLFARE WORKER URL */
+const WEBHOOK_URL = "https://webhook-sender.vinkgt-official.workers.dev/";
 
-  setTimeout(() => notif.remove(), 4000);
+/* CLICK SOUND */
+const clickSound = new Audio("https://cdn.jsdelivr.net/gh/rohitashsingh123/click-sound@main/click.mp3");
+function playClick(){ clickSound.currentTime=0; clickSound.play(); }
+
+/* NOTIFICATIONS */
+function showToast(msg){
+    const container=document.getElementById("notif-container");
+    const toast=document.createElement("div");
+    toast.className="toast";
+    toast.innerText=msg;
+    container.appendChild(toast);
+    setTimeout(()=>toast.remove(),4000);
 }
 
-function toggleMutationInput() {
-  const select = document.getElementById("mutationSelect");
-  const input = document.getElementById("customMutation");
-  input.style.display = select.value === "custom" ? "block" : "none";
-}
+window.onload=()=> showToast("Welcome user! 👋");
 
-function toggleTraitInput() {
-  const select = document.getElementById("traitSelect");
-  const input = document.getElementById("customTrait");
-  input.style.display = select.value === "custom" ? "block" : "none";
-}
-
-function sendData() {
-  let mutation = document.getElementById("mutationSelect").value;
-  let trait = document.getElementById("traitSelect").value;
-
-  if (mutation === "custom") {
-    mutation = document.getElementById("customMutation").value;
-  }
-
-  if (trait === "custom") {
-    trait = document.getElementById("customTrait").value;
-  }
-
-  if (!mutation || !trait) {
-    showNotification("Select or type both mutation and trait.");
-    return;
-  }
-
-  fetch(workerURL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      mutation: mutation,
-      trait: trait
+/* ✅ SEND TO CLOUDFLARE WORKER */
+function sendDiscord(){
+    fetch(WEBHOOK_URL,{
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify({
+            mutation: "SAB Script Request",
+            trait: "User clicked Get Started"
+        })
     })
-  })
-  .then(() => {
-    showNotification("Submission sent successfully.");
-  })
-  .catch(() => {
-    showNotification("Error sending submission.");
-  });
+    .then(res=>{
+        if(res.ok){
+            showToast("Sent Successfully! 🚀");
+        } else {
+            showToast("Worker responded but failed.");
+        }
+    })
+    .catch(err=>{
+        showToast("Error sending. Check worker.");
+        console.error(err);
+    });
 }
 
-window.onload = () => {
-  showNotification("Welcome user!");
-};
+/* ADMIN MODE */
+function adminMode(){
+    const code=prompt("Enter Admin Code:");
+    if(code==="vink123"){
+        showToast("Welcome Vink 👑");
+        document.body.style.background="black";
+    } else showToast("Wrong Code");
+}
+
+/* PARTICLES */
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+for(let i=0;i<50;i++){
+    particles.push({
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height,
+        vx:(Math.random()-0.5)*0.5,
+        vy:(Math.random()-0.5)*0.5
+    });
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="#00f7ff";
+    particles.forEach(p=>{
+        p.x+=p.vx;
+        p.y+=p.vy;
+        ctx.fillRect(p.x,p.y,2,2);
+    });
+    requestAnimationFrame(animate);
+}
+animate();
+
+/* CURSOR TRAIL */
+document.addEventListener("mousemove",e=>{
+    const dot=document.createElement("div");
+    dot.className="trail";
+    dot.style.left=e.clientX+"px";
+    dot.style.top=e.clientY+"px";
+    document.body.appendChild(dot);
+    setTimeout(()=>dot.remove(),300);
+});
+
 </script>
 
 </body>
