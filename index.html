@@ -101,6 +101,30 @@ button:hover {
     margin-top: 5px;
 }
 
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 9999;
+}
+
+.toast {
+    background: #1f1f1f;
+    padding: 12px 18px;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    animation: slideUp 0.4s ease;
+    font-size: 0.9rem;
+}
+
+@keyframes slideUp {
+    from {opacity:0; transform: translateY(20px);}
+    to {opacity:1; transform: translateY(0);}
+}
+
 @keyframes fadeIn {
     from {opacity:0; transform: translateY(10px);}
     to {opacity:1; transform: translateY(0);}
@@ -115,7 +139,7 @@ button:hover {
     <div class="subtitle">By Vink</div>
 
     <div class="section">
-        <strong>What Brainrot(s) Do You Want To Pay For?</strong>
+        <strong>Which Brainrot(s) Would You Like To Pay With?</strong>
         <div class="info">The better Brainrot the Higher chance Vink Will Accept!</div>
         <input type="text" id="brainrotInput" placeholder="Type your Brainrot(s) here...">
     </div>
@@ -133,6 +157,8 @@ button:hover {
     <button onclick="submitForm()">Submit</button>
 </div>
 
+<div class="toast-container" id="toastContainer"></div>
+
 <script>
 const mutationList = ["Default","Gold","Diamond","Rainbow","Bloodrot","Candy","Lava","Galaxy","YinYang","Radioactive","Cursed","Divine"];
 const traitList = ["Taco","Galactic","Bloodmoon","Nyan","Firework","Tung","Crab","Bubblegum","Bombardiro","Glitch","Fire","Concert","Shark","Fin","10B","Brazil","Matteo","Hat","Sleepy","Spider","UFO","Strawberry","Extinct","Graffiti/Paint","Sombrero","Tie","Witch Hat","Indonesia","Meowl","RIP","Pumpkin","SantaHat","Reindeer","Skibidi"];
@@ -146,6 +172,21 @@ traitList.forEach(t => {
     document.getElementById("traits").innerHTML += 
     `<label><input type="checkbox" value="${t}"> ${t}</label>`;
 });
+
+function showToast(message) {
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.innerText = message;
+    document.getElementById("toastContainer").appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+window.onload = function() {
+    showToast("Welcome user!");
+};
 
 function submitForm() {
     const brainrot = document.getElementById("brainrotInput").value;
@@ -167,7 +208,7 @@ Traits: ${selectedTraits.join(", ") || "None"}`
         })
     });
 
-    alert("Submission Sent!");
+    showToast("Sent!");
 }
 </script>
 
