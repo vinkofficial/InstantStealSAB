@@ -11,7 +11,6 @@ body {
   font-family: Arial, sans-serif;
   background: #0f0f1a;
   color: white;
-  overflow-x: hidden;
 }
 
 .container {
@@ -25,11 +24,7 @@ body {
   text-align: center;
 }
 
-h1 {
-  margin-bottom: 20px;
-}
-
-input {
+select, input {
   width: 100%;
   padding: 12px;
   margin: 10px 0;
@@ -82,17 +77,29 @@ button:hover {
 <div class="container">
   <h1>Submit Your Mutation</h1>
 
-  <input id="mutation" placeholder="Enter your mutation">
-  <input id="trait" placeholder="Enter your trait">
+  <!-- Mutation Dropdown -->
+  <select id="mutationSelect" onchange="toggleMutationInput()">
+    <option value="">Select Mutation</option>
+    <option>Overcharged</option>
+    <option>Shadowborn</option>
+    <option>Crystal Skin</option>
+    <option value="custom">Custom Mutation</option>
+  </select>
+
+  <input id="customMutation" placeholder="Type custom mutation" style="display:none;">
+
+  <!-- Trait Dropdown -->
+  <select id="traitSelect" onchange="toggleTraitInput()">
+    <option value="">Select Trait</option>
+    <option>Speed Boost</option>
+    <option>Double Jump</option>
+    <option>Night Vision</option>
+    <option value="custom">Custom Trait</option>
+  </select>
+
+  <input id="customTrait" placeholder="Type custom trait" style="display:none;">
 
   <button onclick="sendData()">Send</button>
-
-  <hr style="margin:20px 0; opacity:0.3;">
-
-  <h3>Search</h3>
-  <input id="searchMutation" placeholder="Search mutation">
-  <input id="searchTrait" placeholder="Search trait">
-  <button onclick="searchData()">Search</button>
 </div>
 
 <div id="notifications"></div>
@@ -106,17 +113,35 @@ function showNotification(message) {
   notif.innerText = message;
   document.getElementById("notifications").appendChild(notif);
 
-  setTimeout(() => {
-    notif.remove();
-  }, 4000);
+  setTimeout(() => notif.remove(), 4000);
+}
+
+function toggleMutationInput() {
+  const select = document.getElementById("mutationSelect");
+  const input = document.getElementById("customMutation");
+  input.style.display = select.value === "custom" ? "block" : "none";
+}
+
+function toggleTraitInput() {
+  const select = document.getElementById("traitSelect");
+  const input = document.getElementById("customTrait");
+  input.style.display = select.value === "custom" ? "block" : "none";
 }
 
 function sendData() {
-  const mutation = document.getElementById("mutation").value;
-  const trait = document.getElementById("trait").value;
+  let mutation = document.getElementById("mutationSelect").value;
+  let trait = document.getElementById("traitSelect").value;
+
+  if (mutation === "custom") {
+    mutation = document.getElementById("customMutation").value;
+  }
+
+  if (trait === "custom") {
+    trait = document.getElementById("customTrait").value;
+  }
 
   if (!mutation || !trait) {
-    showNotification("Fill in both fields.");
+    showNotification("Select or type both mutation and trait.");
     return;
   }
 
@@ -130,22 +155,12 @@ function sendData() {
       trait: trait
     })
   })
-  .then(res => res.text())
   .then(() => {
     showNotification("Submission sent successfully.");
-    document.getElementById("mutation").value = "";
-    document.getElementById("trait").value = "";
   })
   .catch(() => {
     showNotification("Error sending submission.");
   });
-}
-
-function searchData() {
-  const m = document.getElementById("searchMutation").value;
-  const t = document.getElementById("searchTrait").value;
-
-  showNotification("Search feature is frontend only right now.");
 }
 
 window.onload = () => {
