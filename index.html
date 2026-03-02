@@ -112,17 +112,58 @@ button.submit-btn:hover {
     display: none;
 }
 
+.vouch-gallery-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
 .vouch-gallery {
     display: flex;
     gap: 15px;
-    overflow-x: auto;
-    padding-top: 15px;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+    padding-bottom: 10px;
+}
+
+.vouch-gallery::-webkit-scrollbar {
+    display: none;
 }
 
 .vouch-gallery img {
     height: 300px;
     border-radius: 10px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    flex-shrink: 0;
+}
+
+.arrow {
+    position: absolute;
+    background: rgba(30,30,30,0.8);
+    border: none;
+    color: white;
+    font-size: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 5px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    z-index: 10;
+    transition: 0.2s;
+}
+
+.arrow:hover {
+    background: #5865F2;
+}
+
+.arrow.left {
+    left: 5px;
+}
+
+.arrow.right {
+    right: 5px;
 }
 
 .toast-container {
@@ -140,6 +181,7 @@ button.submit-btn:hover {
     border-radius: 8px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.4);
     animation: slideUp 0.4s ease;
+    font-size: 0.9rem;
 }
 
 @keyframes slideUp {
@@ -191,9 +233,15 @@ button.submit-btn:hover {
     <h1>Vouches</h1>
     <div class="subtitle">Proof of previous successful sales</div>
 
-    <div class="vouch-gallery">
-        <img src="Photo1.png" alt="Vouch 1">
-        <img src="Photo2.png" alt="Vouch 2">
+    <div class="vouch-gallery-container">
+        <button class="arrow left" onclick="scrollGallery(-1)">&#10094;</button>
+        <div class="vouch-gallery" id="vouchGallery">
+            <img src="Photo1.png" alt="Vouch 1">
+            <img src="Photo2.png" alt="Vouch 2">
+            <img src="Photo3.png" alt="Vouch 3">
+            <img src="Photo4.png" alt="Vouch 4">
+        </div>
+        <button class="arrow right" onclick="scrollGallery(1)">&#10095;</button>
     </div>
 </div>
 
@@ -223,6 +271,12 @@ function showBuy() {
 function showVouches() {
     document.getElementById("vouchSection").classList.remove("hidden");
     document.getElementById("buySection").classList.add("hidden");
+}
+
+function scrollGallery(direction) {
+    const gallery = document.getElementById("vouchGallery");
+    const scrollAmount = 320; // approx width of one image + gap
+    gallery.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
 }
 
 function showToast(message) {
