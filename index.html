@@ -11,34 +11,58 @@ body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
     color: white;
+    min-height: 100vh;
+}
+
+.nav {
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    gap: 20px;
+    padding: 20px;
+}
+
+.nav button {
+    background: #1f1f1f;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.nav button:hover {
+    background: #5865F2;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
 }
 
 .card {
     background: #141414;
     padding: 40px;
     border-radius: 14px;
-    width: 90%;
+    width: 100%;
     max-width: 750px;
     box-shadow: 0 0 40px rgba(0,0,0,0.6);
-    animation: fadeIn 0.5s ease;
+    animation: fadeIn 0.4s ease;
 }
 
 h1 {
     margin: 0;
-    font-size: 2.2rem;
+    font-size: 2rem;
 }
 
 .subtitle {
     opacity: 0.6;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .section {
-    margin-top: 25px;
+    margin-top: 20px;
 }
 
 input[type="text"] {
@@ -50,11 +74,6 @@ input[type="text"] {
     background: #1f1f1f;
     color: white;
     outline: none;
-    transition: 0.2s;
-}
-
-input[type="text"]:focus {
-    box-shadow: 0 0 0 2px #5865F2;
 }
 
 .checkbox-grid {
@@ -70,15 +89,10 @@ label {
     padding: 6px;
     border-radius: 6px;
     cursor: pointer;
-    transition: 0.2s;
 }
 
-label:hover {
-    background: #2a2a2a;
-}
-
-button {
-    margin-top: 30px;
+button.submit-btn {
+    margin-top: 25px;
     width: 100%;
     padding: 14px;
     border-radius: 8px;
@@ -87,18 +101,28 @@ button {
     color: white;
     font-size: 1rem;
     cursor: pointer;
-    transition: 0.25s;
+    transition: 0.2s;
 }
 
-button:hover {
+button.submit-btn:hover {
     background: #4752c4;
-    transform: translateY(-2px);
 }
 
-.info {
-    font-size: 0.8rem;
-    opacity: 0.6;
-    margin-top: 5px;
+.hidden {
+    display: none;
+}
+
+.vouch-gallery {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-top: 15px;
+}
+
+.vouch-gallery img {
+    height: 300px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
 }
 
 .toast-container {
@@ -108,7 +132,6 @@ button:hover {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    z-index: 9999;
 }
 
 .toast {
@@ -117,7 +140,6 @@ button:hover {
     border-radius: 8px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.4);
     animation: slideUp 0.4s ease;
-    font-size: 0.9rem;
 }
 
 @keyframes slideUp {
@@ -134,13 +156,20 @@ button:hover {
 
 <body>
 
-<div class="card">
+<div class="nav">
+    <button onclick="showBuy()">Buy</button>
+    <button onclick="showVouches()">Vouches</button>
+</div>
+
+<div class="container">
+
+<!-- BUY SECTION -->
+<div id="buySection" class="card">
     <h1>InstaSteal/Duels SAB Script</h1>
     <div class="subtitle">By Vink</div>
 
     <div class="section">
         <strong>Which Brainrot(s) Would You Like To Pay With?</strong>
-        <div class="info">The better Brainrot the Higher chance Vink Will Accept!</div>
         <input type="text" id="brainrotInput" placeholder="Type your Brainrot(s) here...">
     </div>
 
@@ -154,7 +183,20 @@ button:hover {
         <div class="checkbox-grid" id="traits"></div>
     </div>
 
-    <button onclick="submitForm()">Submit</button>
+    <button class="submit-btn" onclick="submitForm()">Submit</button>
+</div>
+
+<!-- VOUCH SECTION -->
+<div id="vouchSection" class="card hidden">
+    <h1>Vouches</h1>
+    <div class="subtitle">Proof of previous successful sales</div>
+
+    <div class="vouch-gallery">
+        <img src="Photo1.png" alt="Vouch 1">
+        <img src="Photo2.png" alt="Vouch 2">
+    </div>
+</div>
+
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
@@ -173,15 +215,23 @@ traitList.forEach(t => {
     `<label><input type="checkbox" value="${t}"> ${t}</label>`;
 });
 
+function showBuy() {
+    document.getElementById("buySection").classList.remove("hidden");
+    document.getElementById("vouchSection").classList.add("hidden");
+}
+
+function showVouches() {
+    document.getElementById("vouchSection").classList.remove("hidden");
+    document.getElementById("buySection").classList.add("hidden");
+}
+
 function showToast(message) {
     const toast = document.createElement("div");
     toast.className = "toast";
     toast.innerText = message;
     document.getElementById("toastContainer").appendChild(toast);
 
-    setTimeout(() => {
-        toast.remove();
-    }, 3000);
+    setTimeout(() => toast.remove(), 3000);
 }
 
 window.onload = function() {
