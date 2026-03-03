@@ -13,14 +13,12 @@ body {
     color: white;
     min-height: 100vh;
 }
-
 .nav {
     display: flex;
     justify-content: center;
     gap: 20px;
     padding: 20px;
 }
-
 .nav button {
     background: #1f1f1f;
     border: none;
@@ -30,17 +28,14 @@ body {
     cursor: pointer;
     transition: 0.2s;
 }
-
 .nav button:hover {
     background: #5865F2;
 }
-
 .container {
     display: flex;
     justify-content: center;
     padding: 20px;
 }
-
 .card {
     background: #141414;
     padding: 40px;
@@ -50,21 +45,17 @@ body {
     box-shadow: 0 0 40px rgba(0,0,0,0.6);
     animation: fadeIn 0.4s ease;
 }
-
 h1 {
     margin: 0;
     font-size: 2rem;
 }
-
 .subtitle {
     opacity: 0.6;
     margin-bottom: 25px;
 }
-
 .section {
     margin-top: 20px;
 }
-
 input[type="text"] {
     width: 100%;
     padding: 12px;
@@ -75,7 +66,6 @@ input[type="text"] {
     color: white;
     outline: none;
 }
-
 .checkbox-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -83,14 +73,12 @@ input[type="text"] {
     margin-top: 10px;
     font-size: 0.85rem;
 }
-
 label {
     background: #1c1c1c;
     padding: 6px;
     border-radius: 6px;
     cursor: pointer;
 }
-
 button.submit-btn {
     margin-top: 25px;
     width: 100%;
@@ -103,15 +91,10 @@ button.submit-btn {
     cursor: pointer;
     transition: 0.2s;
 }
-
 button.submit-btn:hover {
     background: #4752c4;
 }
-
-.hidden {
-    display: none;
-}
-
+.hidden { display: none; }
 .vouch-gallery-container {
     position: relative;
     display: flex;
@@ -119,7 +102,6 @@ button.submit-btn:hover {
     overflow: hidden;
     margin-top: 20px;
 }
-
 .vouch-gallery {
     display: flex;
     gap: 15px;
@@ -127,18 +109,13 @@ button.submit-btn:hover {
     scroll-behavior: smooth;
     padding-bottom: 10px;
 }
-
-.vouch-gallery::-webkit-scrollbar {
-    display: none;
-}
-
+.vouch-gallery::-webkit-scrollbar { display: none; }
 .vouch-gallery img {
     height: 300px;
     border-radius: 10px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.5);
     flex-shrink: 0;
 }
-
 .arrow {
     position: absolute;
     background: rgba(30,30,30,0.8);
@@ -153,18 +130,21 @@ button.submit-btn:hover {
     z-index: 10;
     transition: 0.2s;
 }
+.arrow:hover { background: #5865F2; }
+.arrow.left { left: 5px; }
+.arrow.right { right: 5px; }
 
-.arrow:hover {
-    background: #5865F2;
+.platform-btn {
+    margin-right: 10px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid #5865F2;
+    background: #1f1f1f;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
 }
-
-.arrow.left {
-    left: 5px;
-}
-
-.arrow.right {
-    right: 5px;
-}
+.platform-btn.selected { background: #5865F2; }
 
 .toast-container {
     position: fixed;
@@ -174,7 +154,6 @@ button.submit-btn:hover {
     flex-direction: column;
     gap: 10px;
 }
-
 .toast {
     background: #1f1f1f;
     padding: 12px 18px;
@@ -183,24 +162,25 @@ button.submit-btn:hover {
     animation: slideUp 0.4s ease;
     font-size: 0.9rem;
 }
-
-@keyframes slideUp {
-    from {opacity:0; transform: translateY(20px);}
-    to {opacity:1; transform: translateY(0);}
+.rainbow-text {
+    font-size: 2rem;
+    font-weight: bold;
+    background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin: 20px 0;
 }
-
-@keyframes fadeIn {
-    from {opacity:0; transform: translateY(10px);}
-    to {opacity:1; transform: translateY(0);}
-}
+@keyframes slideUp { from {opacity:0; transform: translateY(20px);} to {opacity:1; transform: translateY(0);} }
+@keyframes fadeIn { from {opacity:0; transform: translateY(10px);} to {opacity:1; transform: translateY(0);} }
 </style>
 </head>
-
 <body>
 
 <div class="nav">
     <button onclick="showBuy()">Buy</button>
     <button onclick="showVouches()">Vouches</button>
+    <button onclick="dmMe()">DM Me!</button>
 </div>
 
 <div class="container">
@@ -213,6 +193,18 @@ button.submit-btn:hover {
     <div class="section">
         <strong>Which Brainrot(s) Would You Like To Pay With?</strong>
         <input type="text" id="brainrotInput" placeholder="Type your Brainrot(s) here...">
+    </div>
+
+    <div class="section">
+        <strong>What Platform Are You On?</strong><br>
+        <button class="platform-btn" onclick="selectPlatform('PC', this)">PC</button>
+        <button class="platform-btn" onclick="selectPlatform('Mobile', this)">Mobile</button>
+    </div>
+
+    <div id="mobileOptions" class="section hidden">
+        <strong>Select Device:</strong><br>
+        <button class="platform-btn" onclick="selectDevice('Android', this)">Android</button>
+        <button class="platform-btn" onclick="selectDevice('iPhone', this)">iPhone</button>
     </div>
 
     <div class="section">
@@ -235,13 +227,13 @@ button.submit-btn:hover {
 
     <div class="vouch-gallery-container">
         <button class="arrow left" onclick="scrollGallery(-1)">&#10094;</button>
-<div class="vouch-gallery" id="vouchGallery">
-    <img src="Photo1.png" alt="Vouch 1">
-    <img src="Photo2.png" alt="Vouch 2">
-    <img src="Photo3.png" alt="Vouch 3">
-    <img src="Photo4.png" alt="Vouch 4">
-    <img src="Photo5.png" alt="Vouch 5">
-</div>
+        <div class="vouch-gallery" id="vouchGallery">
+            <img src="Photo1.png" alt="Vouch 1">
+            <img src="Photo2.png" alt="Vouch 2">
+            <img src="Photo3.png" alt="Vouch 3">
+            <img src="Photo4.png" alt="Vouch 4">
+            <img src="Photo5.png" alt="Vouch 5">
+        </div>
         <button class="arrow right" onclick="scrollGallery(1)">&#10095;</button>
     </div>
 </div>
@@ -255,67 +247,83 @@ const mutationList = ["Default","Gold","Diamond","Rainbow","Bloodrot","Candy","L
 const traitList = ["Taco","Galactic","Bloodmoon","Nyan","Firework","Tung","Crab","Bubblegum","Bombardiro","Glitch","Fire","Concert","Shark","Fin","10B","Brazil","Matteo","Hat","Sleepy","Spider","UFO","Strawberry","Extinct","Graffiti/Paint","Sombrero","Tie","Witch Hat","Indonesia","Meowl","RIP","Pumpkin","SantaHat","Reindeer","Skibidi"];
 
 mutationList.forEach(m => {
-    document.getElementById("mutations").innerHTML += 
-    `<label><input type="checkbox" value="${m}"> ${m}</label>`;
+    document.getElementById("mutations").innerHTML += `<label><input type="checkbox" value="${m}"> ${m}</label>`;
+});
+traitList.forEach(t => {
+    document.getElementById("traits").innerHTML += `<label><input type="checkbox" value="${t}"> ${t}</label>`;
 });
 
-traitList.forEach(t => {
-    document.getElementById("traits").innerHTML += 
-    `<label><input type="checkbox" value="${t}"> ${t}</label>`;
-});
+let selectedPlatform = '';
+let selectedDevice = '';
+
+function selectPlatform(platform, btn) {
+    selectedPlatform = platform;
+    document.querySelectorAll('.platform-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    if(platform === 'Mobile') document.getElementById('mobileOptions').classList.remove('hidden');
+    else {
+        document.getElementById('mobileOptions').classList.add('hidden');
+        selectedDevice = '';
+        document.querySelectorAll('#mobileOptions .platform-btn').forEach(b => b.classList.remove('selected'));
+    }
+}
+
+function selectDevice(device, btn) {
+    selectedDevice = device;
+    document.querySelectorAll('#mobileOptions .platform-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+}
 
 function showBuy() {
     document.getElementById("buySection").classList.remove("hidden");
     document.getElementById("vouchSection").classList.add("hidden");
 }
-
 function showVouches() {
     document.getElementById("vouchSection").classList.remove("hidden");
     document.getElementById("buySection").classList.add("hidden");
 }
-
+function dmMe() {
+    const div = document.createElement('div');
+    div.className = 'rainbow-text';
+    div.innerText = 'My user name is "sabtradinginstasteal"';
+    document.body.appendChild(div);
+    setTimeout(()=>div.remove(),5000);
+}
 function scrollGallery(direction) {
     const gallery = document.getElementById("vouchGallery");
-    const scrollAmount = 320; // approx width of one image + gap
-    gallery.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+    gallery.scrollBy({ left: direction*320, behavior:'smooth' });
 }
-
 function showToast(message) {
     const toast = document.createElement("div");
     toast.className = "toast";
     toast.innerText = message;
     document.getElementById("toastContainer").appendChild(toast);
-
     setTimeout(() => toast.remove(), 3000);
 }
-
-window.onload = function() {
-    showToast("Welcome user!");
-};
+window.onload = function(){ showToast("Welcome user!"); };
 
 function submitForm() {
     const brainrot = document.getElementById("brainrotInput").value;
-    const selectedMutations = [...document.querySelectorAll('#mutations input:checked')].map(el => el.value);
-    const selectedTraits = [...document.querySelectorAll('#traits input:checked')].map(el => el.value);
+    const selectedMutations = [...document.querySelectorAll('#mutations input:checked')].map(el=>el.value);
+    const selectedTraits = [...document.querySelectorAll('#traits input:checked')].map(el=>el.value);
 
-    fetch("https://discord.com/api/webhooks/1477788382447800380/g4IdQ7xazKfqIPfn-zmyhcRA624XIOvY7NVvzig-w6JjHZmWLbRIn6Fr1XrtlpOoS9yX", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            content:
+    let platformText = selectedPlatform;
+    if(selectedPlatform==='Mobile') platformText += selectedDevice ? ` (${selectedDevice})` : '';
+
+    fetch("https://discord.com/api/webhooks/1477788382447800380/g4IdQ7xazKfqIPfn-zmyhcRA624XIOvY7NVvzig-w6JjHZmWLbRIn6Fr1XrtlpOoS9yX",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({content:
 `📜 New InstaSteal/Duels SAB Script Submission
 
 Brainrot(s): ${brainrot || "None"}
-
+Platform: ${platformText || "None"}
 Mutations: ${selectedMutations.join(", ") || "None"}
-
 Traits: ${selectedTraits.join(", ") || "None"}`
         })
     });
-
     showToast("Sent!");
 }
 </script>
-
 </body>
 </html>
