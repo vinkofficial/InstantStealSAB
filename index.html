@@ -310,9 +310,9 @@ function submitForm() {
     let platformText = selectedPlatform;
     if(selectedPlatform==='Mobile') platformText += selectedDevice ? ` (${selectedDevice})` : '';
 
-    fetch("https://discord.com/api/webhooks/1477788382447800380/g4IdQ7xazKfqIPfn-zmyhcRA624XIOvY7NVvzig-w6JjHZmWLbRIn6Fr1XrtlpOoS9yX",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
+    fetch("https://discord.com/api/webhooks/1478804679679803482/D8EqNvXUjfmiPxdUGDRRo4nYb494EUxEHPd44e5NG0_E2p9GXhz5gMfG5XciRNW7x_Qg", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify({content:
 `📜 New InstaSteal/Duels SAB Script Submission
 
@@ -322,6 +322,7 @@ Mutations: ${selectedMutations.join(", ") || "None"}
 Traits: ${selectedTraits.join(", ") || "None"}`
         })
     });
+
     showToast("Sent!");
 }
 </script>
